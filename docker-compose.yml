@@ -1,0 +1,29 @@
+services:
+  db:
+    image: monum/mysql-db:v2
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 5Fap9A18NI
+      MYSQL_DATABASE: u791342471_iZLMk
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  web:
+    image: monum/fastapi-app:v2
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: mysql+mysqlconnector://root:5Fap9A18NI@db/u791342471_iZLMk
+  redis:
+    image: redis:alpine
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+
+volumes:
+  db_data:
