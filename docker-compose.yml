@@ -1,6 +1,6 @@
 services:
   web:
-    image: monum/fastapi-app:v3
+    image: monum/fastapi-app:v4
     container_name: fastapi_app
     ports:
       - "80:8000"
