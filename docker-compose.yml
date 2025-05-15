@@ -1,21 +1,39 @@
 services:
   web:
-    image: monum/server:v2
+    image: monum/server:v9
     container_name: fastapi_app
     ports:
       - "80:8000"
     depends_on:
       - redis
+      - search
+    restart: unless-stopped
   search:
-    image: monum/search:v1
+    image: monum/search:v4
     container_name: search_app
     ports:
       - "8001:8001"
+    restart: unless-stopped
     depends_on:
-      - redis
-      - web
+      - elasticsearch
   redis:
     image: redis:alpine
     container_name: redis-server
     ports:
       - "6379:6379"
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=changeme
+      - xpack.security.enabled=true
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+volumes:
+  es_data:
